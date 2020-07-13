@@ -3,8 +3,8 @@
 #include <vector>
 #include <bitset>
 
-#include "operations_64.h"
-#include "character_database_64.h"
+#include "scalar/operations_64.h"
+#include "scalar/character_database_64.h"
 
 #define N_ROWS 64 * 2
 
@@ -49,7 +49,6 @@ void sse_trans(uint8_t const *inp, uint8_t *out, int nrows, int ncols) {
   for (i = 8; --i >= 0; tmp.x = _mm_slli_epi64(tmp.x, 1))
     OUT(rr, cc + i) = _mm_movemask_epi8(tmp.x);
 }
-
 
 int main() {
   std::vector<uint8_t> input{};

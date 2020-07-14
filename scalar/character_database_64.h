@@ -143,3 +143,31 @@ inline uint64_t match_0_9(uint64_t B7, uint64_t B6, uint64_t B5,
 
   return A5 & A6;
 }
+
+
+inline uint64_t match_130(uint64_t B7, uint64_t B6, uint64_t B5,
+                          uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
+  uint64_t A1 = ~B7 | B6;
+  uint64_t A2 = B5 | B4;
+  uint64_t A3 = B3 | B2;
+  uint64_t A4 = ~B1 | B0;
+
+  uint64_t A5 = A1 | A2;
+  uint64_t A6 = A3 | A4;
+
+  return ~(A5 | A6);
+}
+
+
+inline uint64_t match_140(uint64_t B7, uint64_t B6, uint64_t B5,
+                          uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
+  uint64_t A1 = ~B7 | B6;
+  uint64_t A2 = B5 | B4;
+  uint64_t A3 = ~B3 | ~B2;
+  uint64_t A4 = B1 | B0;
+
+  uint64_t A5 = A1 | A2;
+  uint64_t A6 = A3 | A4;
+
+  return ~(A5 | A6);
+}

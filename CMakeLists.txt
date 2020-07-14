@@ -23,12 +23,24 @@ if(ENABLE_ASMJIT)
     include_directories(${ASMJIT_INCLUDE_DIR})
 endif()
 
-# TODO Debug asmJIT
+# debugging options
+if(NOT DEFINED PROFILING)
+    set(PROFILING "" CACHE STRING "Choose type of profiling support for perf and AsmJit, options are: None, Assembly, Source")
+endif()
+if(PROFILING STREQUAL "Assembly")
+    add_compile_definitions("PROFILING_ASSEMBLY")
+elseif(PROFILING STREQUAL "Source")
+    add_compile_definitions("PROFILING_SOURCE")
+endif()
 
 #-----------------------------------------------------------------------------------------------------------------------
 
 add_executable(parabix_asmjit main.cpp)
+add_executable(asmjit_tryout asmjit_tryout.cpp)
+
 if(ENABLE_ASMJIT)
     target_compile_definitions(parabix_asmjit PRIVATE "ENABLE_ASMJIT")
     target_link_libraries(parabix_asmjit ${ASMJIT_LIBRARIES})
+    target_compile_definitions(asmjit_tryout PRIVATE "ENABLE_ASMJIT")
+    target_link_libraries(asmjit_tryout ${ASMJIT_LIBRARIES})
 endif()

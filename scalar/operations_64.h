@@ -2,7 +2,9 @@
 
 #include <limits>
 
-#define MAX_UINT64 std::numeric_limits<uint64_t>::max()
+#ifndef MAX_UINT64
+  #define MAX_UINT64 std::numeric_limits<uint64_t>::max()
+#endif
 
 struct ResultCarry {
   uint64_t result;

@@ -1,14 +1,10 @@
-#include <iostream>
-#include <emmintrin.h>
 #include <vector>
 #include <bitset>
+#include <chrono>
 
 #include "utils.h"
 #include "scalar/operations_64.h"
 #include "scalar/character_database_64.h"
-
-#define N_VECTORS 2
-#define N_ROWS 64 * N_VECTORS
 
 
 void regex_match_130_09_star_140(uint64_t* input, uint64_t* output, size_t size) {
@@ -56,21 +52,21 @@ void regex_match_130_09_star_140(uint64_t* input, uint64_t* output, size_t size)
 
 
 int main() {
-//  auto input = random_byte_data(N_ROWS);
-//  auto input = sequential_data(N_ROWS);
-  std::vector<uint8_t> input {
-      130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140,
-      130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 3,
-      9, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140,
-      130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 1, 1, 1, 140, 130, 0, 0, 0, 11, 1, 1, 140, 130, 0, 0, 0, 10, 1, 1, 140
-  };
+//  std::vector<uint8_t> input = small_test_sequence();
+  std::vector<uint8_t> input = random_byte_data(256*1024*1024);
+  auto N_VECTORS = input.size()/VECTOR_LENGTH;
+  auto N_ROWS = input.size();
 
   auto output = std::vector<uint8_t>(N_ROWS, 0);
   auto output_stream = std::vector<uint64_t>(N_ROWS, 0);
 
   transpose_sse(input.data(), output.data(), N_ROWS, 8);
 
-  regex_match_130_09_star_140(reinterpret_cast<uint64_t *>(output.data()), output_stream.data(), 2);
+  auto execution_start = std::chrono::high_resolution_clock::now();
+  regex_match_130_09_star_140(reinterpret_cast<uint64_t *>(output.data()), output_stream.data(), N_VECTORS);
+  auto execution_end = std::chrono::high_resolution_clock::now();
+  auto elapsed_execution = std::chrono::duration_cast<std::chrono::microseconds>(execution_end - execution_start).count();
+  std::cout << "Execution time: " << elapsed_execution << "\n";
 
   auto stream_7 = reinterpret_cast<uint64_t *>(output.data());
   auto stream_6 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS;
@@ -80,49 +76,19 @@ int main() {
   auto stream_2 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 5;
   auto stream_1 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 6;
   auto stream_0 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 7;
-//
-//  uint64_t matched_0[N_VECTORS];
-//  uint64_t matched_1[N_VECTORS];
-//  uint64_t matched_0_9[N_VECTORS];
-//  uint64_t scanned_through[N_VECTORS];
-//  uint64_t matched_star[N_VECTORS];
-//
-//  for (size_t i = 0; i < N_VECTORS; ++i) {
-//    matched_0_9[i] = match_0_9(
-//        *(stream_7 + i), *(stream_6 + i), *(stream_5 + i), *(stream_4 + i),
-//        *(stream_3 + i), *(stream_2 + i), *(stream_1 + i), *(stream_0 + i)
-//        );
-//    matched_0[i] = match_0(
-//        *(stream_7 + i), *(stream_6 + i), *(stream_5 + i), *(stream_4 + i),
-//        *(stream_3 + i), *(stream_2 + i), *(stream_1 + i), *(stream_0 + i)
-//        );
-//    matched_1[i] = match_1(
-//        *(stream_7 + i), *(stream_6 + i), *(stream_5 + i), *(stream_4 + i),
-//        *(stream_3 + i), *(stream_2 + i), *(stream_1 + i), *(stream_0 + i)
-//      );
-//
-//    scanned_through[i] = scan_thru(matched_0[i] << 1, matched_1[i]);
-//    matched_star[i] = match_star(matched_0[i] << 1, matched_0_9[i]);
-//  }
-//
-  print_bit_array(stream_7, N_VECTORS);
-  print_bit_array(stream_6, N_VECTORS);
-  print_bit_array(stream_5, N_VECTORS);
-  print_bit_array(stream_4, N_VECTORS);
-  print_bit_array(stream_3, N_VECTORS);
-  print_bit_array(stream_2, N_VECTORS);
-  print_bit_array(stream_1, N_VECTORS);
-  print_bit_array(stream_0, N_VECTORS);
 
-  line_break();
-
-  print_bit_array(output_stream.data(), N_VECTORS);
-
-//  print_bit_array(matched_0, N_VECTORS);
-//  print_bit_array(matched_1, N_VECTORS);
-//  print_bit_array(matched_0_9, N_VECTORS);
-//  print_bit_array(scanned_through, N_VECTORS);
-//  print_bit_array(matched_star, N_VECTORS);
+//  print_bit_array(stream_7, N_VECTORS);
+//  print_bit_array(stream_6, N_VECTORS);
+//  print_bit_array(stream_5, N_VECTORS);
+//  print_bit_array(stream_4, N_VECTORS);
+//  print_bit_array(stream_3, N_VECTORS);
+//  print_bit_array(stream_2, N_VECTORS);
+//  print_bit_array(stream_1, N_VECTORS);
+//  print_bit_array(stream_0, N_VECTORS);
+//
+//  line_break();
+//
+//  print_bit_array(output_stream.data(), N_VECTORS);
 
   return 0;
 }

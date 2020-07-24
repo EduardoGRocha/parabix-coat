@@ -1,173 +1,211 @@
 #pragma once
 
-inline uint64_t match_0(uint64_t B7, uint64_t B6, uint64_t B5,
-    uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | B2;
-  uint64_t A4 = B1 | B0;
+// Somehow type deduction is not correct on coat. Must convert to Vector before returning
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+// Not operations are grouped because ~B modifies B in coat
+// In some cases, one must make a copy
 
-  return ~(A5 | A6);
+//TODO probably would be better to habe a DS that groups all 8 bit streams in one
+template<typename Vector>
+inline Vector match_0(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B2;
+  auto A4 = B1 | B0;
+
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
+
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_1(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | B2;
-  uint64_t A4 = B1 | ~B0;
+template<typename Vector>
+inline Vector match_1(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  Vector B0_copy = B0;
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B2;
+  auto A4 = B1 | ~B0_copy;
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_2(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | B2;
-  uint64_t A4 = ~B1 | B0;
+template<typename Vector>
+inline Vector match_2(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  Vector B1_copy = B1;
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B2;
+  auto A4 = ~B1_copy | B0;
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_3(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | B2;
-  uint64_t A4 = ~(B1 & B0);
+template<typename Vector>
+inline Vector match_3(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B2;
+  auto A4 = ~(B1 & B0);
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_4(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | ~B2;
-  uint64_t A4 = B1 | B0;
+template<typename Vector>
+inline Vector match_4(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  Vector B2_copy = B2;
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | ~B2_copy;
+  auto A4 = B1 | B0;
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_5(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | ~B2;
-  uint64_t A4 = B1 | ~B0;
+template<typename Vector>
+inline Vector match_5(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B1;
+  auto A4 = ~(B2 & B0);
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_6(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | ~B2;
-  uint64_t A4 = ~B1 | B0;
+template<typename Vector>
+inline Vector match_6(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B0;
+  auto A4 = ~(B2 & B1);
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_7(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | ~B2;
-  uint64_t A4 = ~(B1 & B0);
+template<typename Vector>
+inline Vector match_7(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  Vector B2_copy = B2;
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | ~B2_copy;
+  auto A4 = ~(B1 & B0);
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_8(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = ~B3 | B2;
-  uint64_t A4 = B1 | B0;
+template<typename Vector>
+inline Vector match_8(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  Vector B3_copy = B3;
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = ~B3_copy | B2;
+  auto A4 = B1 | B0;
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
-inline uint64_t match_9(uint64_t B7, uint64_t B6, uint64_t B5,
-                        uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = ~B3 | B2;
-  uint64_t A4 = B1 | ~B0;
+template<typename Vector>
+inline Vector match_9(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = B7 | B6;
+  auto A2 = B5 | B4;
+  auto A3 = B2 | B1;
+  auto A4 = ~(B3 & B0);
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
 // TODO can it be made more efficient with NOR?
-inline uint64_t match_0_9(uint64_t B7, uint64_t B6, uint64_t B5,
-                          uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = ~(B7 | B6);
-  uint64_t A2 = ~(B5 | B4);
-  uint64_t A3 = ~(B3 & B2);
-  uint64_t A4 = ~(B3 & B1);
+//template<typename Vector>
+//inline Vector match_0_9(const Vector &B7, const Vector &B6, const Vector &B5,
+//    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+//  auto A1 = ~(B7 | B6);
+//  auto A2 = ~(B5 | B4);
+//  auto A3 = ~(B3 & B2);
+//  auto A4 = ~(B3 & B1);
+//
+//  auto A5 = A1 & A2;
+//  auto A6 = A3 & A4;
+//
+//  Vector ret = A5 & A6;
+//  return ret;
+//}
 
-  uint64_t A5 = A1 & A2;
-  uint64_t A6 = A3 & A4;
 
-  return A5 & A6;
+template<typename Vector>
+inline Vector match_130(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = B6 | B0;
+  auto A2 = B5 | B4;
+  auto A3 = B3 | B2;
+  auto A4 = ~(B7 & B1);
+
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
+
+  Vector ret = ~(A5 | A6);
+  return ret;
 }
 
 
-inline uint64_t match_130(uint64_t B7, uint64_t B6, uint64_t B5,
-                          uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = ~B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = B3 | B2;
-  uint64_t A4 = ~B1 | B0;
+template<typename Vector>
+inline Vector match_140(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  Vector B7_copy = B7;
+  auto A1 = ~B7_copy | B6;
+  auto A2 = B5 | B4;
+  auto A3 = ~(B3 & B2);
+  auto A4 = B1 | B0;
 
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
+  auto A5 = A1 | A2;
+  auto A6 = A3 | A4;
 
-  return ~(A5 | A6);
-}
-
-
-inline uint64_t match_140(uint64_t B7, uint64_t B6, uint64_t B5,
-                          uint64_t B4, uint64_t B3, uint64_t B2, uint64_t B1, uint64_t B0) {
-  uint64_t A1 = ~B7 | B6;
-  uint64_t A2 = B5 | B4;
-  uint64_t A3 = ~B3 | ~B2;
-  uint64_t A4 = B1 | B0;
-
-  uint64_t A5 = A1 | A2;
-  uint64_t A6 = A3 | A4;
-
-  return ~(A5 | A6);
+  Vector ret = ~(A5 | A6);
+  return ret;
 }

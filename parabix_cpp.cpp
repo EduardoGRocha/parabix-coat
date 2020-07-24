@@ -6,6 +6,8 @@
 #include "scalar/operations_64.h"
 #include "scalar/character_database_64.h"
 
+#include "perfevent/PerfEvent.hpp"
+
 
 void regex_match_130_09_star_140(uint64_t* input, uint64_t* output, size_t size) {
   // Matches (130, [0-9]*, 140) ReGex
@@ -51,32 +53,16 @@ void regex_match_130_09_star_140(uint64_t* input, uint64_t* output, size_t size)
 }
 
 
-int main() {
-//  std::vector<uint8_t> input = small_test_sequence();
-  std::vector<uint8_t> input = random_byte_data(256*1024*1024);
-  auto N_VECTORS = input.size()/VECTOR_LENGTH;
-  auto N_ROWS = input.size();
-
-  auto output = std::vector<uint8_t>(N_ROWS, 0);
-  auto output_stream = std::vector<uint64_t>(N_ROWS, 0);
-
-  transpose_sse(input.data(), output.data(), N_ROWS, 8);
-
-  auto execution_start = std::chrono::high_resolution_clock::now();
-  regex_match_130_09_star_140(reinterpret_cast<uint64_t *>(output.data()), output_stream.data(), N_VECTORS);
-  auto execution_end = std::chrono::high_resolution_clock::now();
-  auto elapsed_execution = std::chrono::duration_cast<std::chrono::microseconds>(execution_end - execution_start).count();
-  std::cout << "Execution time: " << elapsed_execution << "\n";
-
-  auto stream_7 = reinterpret_cast<uint64_t *>(output.data());
-  auto stream_6 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS;
-  auto stream_5 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 2;
-  auto stream_4 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 3;
-  auto stream_3 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 4;
-  auto stream_2 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 5;
-  auto stream_1 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 6;
-  auto stream_0 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 7;
-
+//void test_regex() {
+//  auto stream_7 = reinterpret_cast<uint64_t *>(output.data());
+//  auto stream_6 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS;
+//  auto stream_5 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 2;
+//  auto stream_4 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 3;
+//  auto stream_3 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 4;
+//  auto stream_2 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 5;
+//  auto stream_1 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 6;
+//  auto stream_0 = reinterpret_cast<uint64_t *>(output.data()) + N_VECTORS * 7;
+//
 //  print_bit_array(stream_7, N_VECTORS);
 //  print_bit_array(stream_6, N_VECTORS);
 //  print_bit_array(stream_5, N_VECTORS);
@@ -89,6 +75,68 @@ int main() {
 //  line_break();
 //
 //  print_bit_array(output_stream.data(), N_VECTORS);
+//}
 
+
+void benchmark_transpose() {
+  __asm volatile("");
+  std::vector<uint8_t> input = sequential_data(256*1024*1024);
+  auto N_ROWS = input.size();
+  auto output = std::vector<uint8_t>(N_ROWS, 0);
+
+  size_t n = 50;
+  PerfEvent e;
+  e.startCounters();
+  for (size_t i = 0; i < n; ++i) {
+    transpose_sse(input.data(), output.data(), N_ROWS, 8);
+  }
+  e.stopCounters();
+  e.printReport(std::cout, n); // use n as scale factor
+  std::cout << std::endl;
+}
+
+void benchmark_cpp(uint64_t *input, uint64_t *output_stream) {
+  std::vector<size_t> workload_sizes = {
+      1024, 4*1024, 16*1024, 64*1024, 256*1024, 1024*1024,
+      4*1024*1024, 16*1024*1024, 64*1024*1024, 256*1024*1024
+  };
+
+  for (const auto& workload_size : workload_sizes) {
+    size_t N_VECTORS = workload_size/64;
+    size_t n_iterations = 20;
+    PerfEvent e;
+    e.startCounters();
+    for (size_t iteration = 0; iteration < n_iterations; ++iteration) {
+      regex_match_130_09_star_140(input, output_stream, N_VECTORS);
+    }
+    e.stopCounters();
+    // Normalize per Byte
+    e.printReport(std::cout, n_iterations*workload_size); // use n as scale factor
+    std::cout << std::endl;
+  }
+}
+
+
+int main() {
+#if true
+/// Benchmark execution
+//  std::vector<uint8_t> input = small_test_sequence();
+//  std::vector<uint8_t> input = random_byte_data(512*1024*1024);
+// TODO throwing free(): invalid pointer for size > 256*1024*1024
+// The problems seems to be on transpose_sse
+  size_t N_ROWS = 256*1024*1024;
+  std::vector<uint8_t> input = sequential_data(N_ROWS);
+
+  auto transposed_input = std::vector<uint8_t>(N_ROWS, 0);
+  auto output_stream = std::vector<uint64_t>(N_ROWS, 0);
+
+  transpose_sse(input.data(), transposed_input.data(), N_ROWS, 8);
+  uint64_t *transposed_input_64 = reinterpret_cast<uint64_t*>(transposed_input.data());
+
+  benchmark_cpp(transposed_input_64, output_stream.data());
+#else
+/// Benchmark transposing
+  benchmark_transpose();
+#endif
   return 0;
 }

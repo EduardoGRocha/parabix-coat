@@ -16,3 +16,9 @@
 [submodule "perfevent"]
 	path = perfevent
 	url = https://github.com/viktorleis/perfevent
+[submodule "external/benchmark"]
+	path = external/benchmark
+	url = https://github.com/google/benchmark.git
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/google/googletest.git

@@ -4,9 +4,10 @@ project(parabix_asmjit)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Wall -Wextra -march=native -fno-rtti -rdynamic -Wl,--no-as-needed")
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -march=native -fno-rtti -rdynamic -Wl,--no-as-needed")
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
+# For LLVM needs to compile with -rdynamic -fno-rtti
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Wall -Wextra -march=native -fno-rtti -rdynamic -Wl,--no-as-needed")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -march=native -fno-rtti -rdynamic -Wl,--no-as-needed")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Adding asmJIT
@@ -70,6 +71,7 @@ include_directories("${CMAKE_SOURCE_DIR}/external/coat/include/")
 add_executable(parabix_cpp parabix_cpp.cpp)
 add_executable(asmjit_tryout asmjit_tryout.cpp)
 add_executable(parabix_coat parabix_coat.cpp)
+add_executable(DFA DFA.cpp)
 
 if(ENABLE_ASMJIT)
     target_compile_definitions(parabix_cpp PRIVATE "ENABLE_ASMJIT")
@@ -78,4 +80,5 @@ if(ENABLE_ASMJIT)
     target_link_libraries(asmjit_tryout ${ASMJIT_LIBRARIES})
     target_compile_definitions(parabix_coat PRIVATE "ENABLE_ASMJIT" PRIVATE "ENABLE_LLVMJIT")
     target_link_libraries(parabix_coat ${ASMJIT_LIBRARIES} ${LLVM_LIBRARIES})
+    target_link_libraries(DFA)
 endif()

@@ -162,20 +162,20 @@ inline Vector match_9(const Vector &B7, const Vector &B6, const Vector &B5,
 }
 
 // TODO can it be made more efficient with NOR?
-//template<typename Vector>
-//inline Vector match_0_9(const Vector &B7, const Vector &B6, const Vector &B5,
-//    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
-//  auto A1 = ~(B7 | B6);
-//  auto A2 = ~(B5 | B4);
-//  auto A3 = ~(B3 & B2);
-//  auto A4 = ~(B3 & B1);
-//
-//  auto A5 = A1 & A2;
-//  auto A6 = A3 & A4;
-//
-//  Vector ret = A5 & A6;
-//  return ret;
-//}
+template<typename Vector>
+inline Vector match_0_9(const Vector &B7, const Vector &B6, const Vector &B5,
+    const Vector &B4, const Vector &B3, const Vector &B2, const Vector &B1, const Vector &B0) {
+  auto A1 = ~(B7 | B6);
+  auto A2 = ~(B5 | B4);
+  auto A3 = ~(B3 & B2);
+  auto A4 = ~(B3 & B1);
+
+  auto A5 = A1 & A2;
+  auto A6 = A3 & A4;
+
+  Vector ret = A5 & A6;
+  return ret;
+}
 
 
 template<typename Vector>

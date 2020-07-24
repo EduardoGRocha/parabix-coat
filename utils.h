@@ -26,6 +26,7 @@ void transpose_sse(uint8_t const *inp, uint8_t *out, int n_rows, int n_cols) {
   }
   if (rr == n_rows) return;
 
+//  std::cout << "------------";
   // The remainder is a block of 8x(16n+8) bits (n may be 0).
   //  Do a PAIR of 8x8 blocks in each step:
   for (cc = 0; cc <= n_cols - 16; cc += 16) {
@@ -86,15 +87,8 @@ std::vector<uint8_t> random_byte_data(size_t size) {
 std::vector<uint8_t> sequential_data(size_t size) {
   std::vector<uint8_t> ret(size);
 
-  size_t i = 0;
-  for (; i < size-256; i+= 256) {
-    for (size_t j = 0; j < 256; ++j) {
-      ret[i+j] = j;
-    }
-  }
-
-  for (size_t j = 0; j < size-i; ++j) {
-    ret[i+j] = j;
+  for (size_t i = 0; i < size; ++i) {
+    ret[i] = (uint8_t) (i & size_t(255));
   }
 
   return ret;

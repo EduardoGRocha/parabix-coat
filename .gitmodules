@@ -1,0 +1,18 @@
+[submodule "external/asmjit"]
+	path = external/asmjit
+	url = https://github.com/asmjit/asmjit.git
+[submodule "coat"]
+	path = coat
+	url = https://github.com/tetzank/coat.git
+[submodule "external/coat"]
+	path = external/coat
+	url = https://github.com/tetzank/coat.git
+[submodule "external/llvm"]
+	path = external/llvm
+	url = https://github.com/llvm/llvm-project
+[submodule "external/asmjit-utilities"]
+	path = external/asmjit-utilities
+	url = https://github.com/tetzank/asmjit-utilities
+[submodule "perfevent"]
+	path = perfevent
+	url = https://github.com/viktorleis/perfevent

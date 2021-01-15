@@ -9,6 +9,7 @@
 
 #define VECTOR_LENGTH 64
 
+//mischasan.wordpress.com/2011/10/03/the-full-sse2-bit-matrix-transpose-routine
 void transpose_sse(uint8_t const *inp, uint8_t *out, int n_rows, int n_cols) {
 #   define INP(x,y) inp[(x)*n_cols/8 + (y)/8]
 #   define OUT(x,y) out[(y)*n_rows/8 + (x)/8]
